@@ -1,3 +1,4 @@
+[![codecov](https://codecov.io/gh/Ferrany1/switch-case-codegen/graph/badge.svg?token=UY1SM9YT0U)](https://codecov.io/gh/Ferrany1/switch-case-codegen)
 # Switch Case Codegen
 
 ## Overview:
