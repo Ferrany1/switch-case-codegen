@@ -32,6 +32,8 @@ Global Flags:
 ```
 
 ## Example:
+
+### Function:
 enum.go:
 ```golang
 //go:generate switch-case-codegen enum -p ./enum.go -t function -n test_package --types TestType2
@@ -70,5 +72,45 @@ func blob(input test_package.TestType2) {
 	case test_package.testType2Value5:
 		// TODO: add case expression
 	}
+}
+```
+
+### Raw:
+enum.go:
+```golang
+//go:generate switch-case-codegen enum -p ./enum.go -n test_package --types TestType2
+
+type TestType1 string
+
+const (
+	TestType1Value1 TestType1 = "1"
+	TestType1Value2 TestType1 = "2"
+	TestValue1      string    = "3"
+	TestValue2      int       = 4
+)
+
+type TestType2 int
+
+const (
+	TestType2Value1 TestType2 = iota
+	TestType2Value2
+	TestType2Value3
+	TestType2Value4
+	testType2Value5
+)
+```
+output:
+```golang
+switch test_package.input {
+case test_package.TestType2Value1:
+// TODO: add case expression
+case test_package.TestType2Value2:
+// TODO: add case expression
+case test_package.TestType2Value3:
+// TODO: add case expression
+case test_package.TestType2Value4:
+// TODO: add case expression
+case test_package.testType2Value5:
+// TODO: add case expression
 }
 ```
