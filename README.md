@@ -6,7 +6,7 @@ Tool for generating switch cases for enums.
 
 ## Install:
 ```
-go install github.com/Ferrany1/switch-case-codegen/cmd/switch-case-codegen@latest
+go install github.com/Ferrany1/switch-case-codegen/cmd/switch-case-codegen
 ```
 
 ## Usage:
