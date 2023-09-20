@@ -34,7 +34,7 @@ Global Flags:
 ## Example:
 enum.go:
 ```golang
-//go:generate ./switch-case-codegen  enum -p ./1.go -t function -n test_package --types TestType2
+//go:generate switch-case-codegen  enum -p ./1.go -t function -n test_package --types TestType2
 
 type TestType1 string
 
