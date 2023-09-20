@@ -18,20 +18,10 @@ func GenerateSwitchCases(
 		includeNonExported = true
 	}
 
-	var executeTemplateFunction func(writer io.Writer, packageName string, objects enums) error
-	switch templateType {
-	case RawTemplateType:
-		executeTemplateFunction = executeRawSwitchCaseTemplate
-	case FunctionTemplateType:
-		executeTemplateFunction = executeFunctionSwitchCaseTemplate
-	default:
-		return eris.New("invalid template")
-	}
-
 	e, err := parseEnumsFromFile(filePath, targetObjectTypeNames, includeNonExported)
 	if err != nil {
 		return eris.Wrap(err, "parsing enums from file")
 	}
 
-	return executeTemplateFunction(output, packageName, e)
+	return executeTemplate(output, templateType, packageName, e)
 }

@@ -58,7 +58,7 @@ func Test_ExecuteRawSwitchCaseTemplate(t *testing.T) {
 
 				buf := &bytes.Buffer{}
 
-				err := executeRawSwitchCaseTemplate(buf, tt.args.packageName, tt.args.objects)
+				err := executeTemplate(buf, RawTemplateType, tt.args.packageName, tt.args.objects)
 				if (err != nil) != tt.wantErr {
 					t.Errorf("ExecuteRawSwitchCaseTemplate() error = %v, wantErr %v", err, tt.wantErr)
 
@@ -129,7 +129,7 @@ func Test_ExecuteFunctionSwitchCaseTemplate(t *testing.T) {
 
 				buf := &bytes.Buffer{}
 
-				err := executeFunctionSwitchCaseTemplate(buf, testCase.args.packageName, testCase.args.objects)
+				err := executeTemplate(buf, FunctionTemplateType, testCase.args.packageName, testCase.args.objects)
 				if (err != nil) != testCase.wantErr {
 					t.Errorf("ExecuteFunctionSwitchCaseTemplate() error = %v, wantErr %v", err, testCase.wantErr)
 
@@ -137,6 +137,64 @@ func Test_ExecuteFunctionSwitchCaseTemplate(t *testing.T) {
 				}
 				if buf.String() != testCase.want {
 					t.Errorf("executeTemplate() got = %v, want %v", buf.String(), testCase.want)
+				}
+			},
+		)
+	}
+}
+
+func Test_createTemplate(t *testing.T) {
+	t.Parallel()
+
+	type args struct {
+		templateType TemplateType
+	}
+	tests := []struct {
+		name    string
+		args    args
+		wantErr bool
+	}{
+		{
+			name: "raw",
+			args: args{
+				templateType: RawTemplateType,
+			},
+			wantErr: false,
+		},
+		{
+			name: "function",
+			args: args{
+				templateType: FunctionTemplateType,
+			},
+			wantErr: false,
+		},
+		{
+			name: "not valid",
+			args: args{
+				templateType: testNotValid,
+			},
+			wantErr: true,
+		},
+		{
+			name: "unknown",
+			args: args{
+				templateType: "",
+			},
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+
+		t.Run(
+			tt.name,
+			func(t *testing.T) {
+				t.Parallel()
+
+				_, err := createTemplate(tt.args.templateType)
+				if (err != nil) != tt.wantErr {
+					t.Errorf("createTemplate() error = %v, wantErr %v", err, tt.wantErr)
+					return
 				}
 			},
 		)

@@ -13,6 +13,7 @@ type TemplateType string
 const (
 	RawTemplateType      TemplateType = "raw"
 	FunctionTemplateType TemplateType = "function"
+	testNotValid         TemplateType = "not valid"
 )
 
 const (
@@ -31,30 +32,43 @@ const (
 		"\t}\n"
 )
 
-func executeRawSwitchCaseTemplate(writer io.Writer, packageName string, objects enums) error {
-	rawSwitchCaseTemplate, err := template.New("rawSwitchCaseTemplate").
-		Parse(fmt.Sprintf(switchCaseRangeOverEnumsTemplate, switchCaseRangeOverEnumValuesTemplate))
-	if err != nil {
-		return eris.Wrap(err, "parsing raw switch case template")
+func createTemplate(templateType TemplateType) (*template.Template, error) {
+	var (
+		name string
+		text string
+	)
+
+	switch templateType {
+	case RawTemplateType:
+		name = "rawSwitchCaseTemplate"
+		text = fmt.Sprintf(switchCaseRangeOverEnumsTemplate, switchCaseRangeOverEnumValuesTemplate)
+	case FunctionTemplateType:
+		name = "functionSwitchCaseTemplate"
+		text = fmt.Sprintf(switchCaseRangeOverEnumsTemplate, switchCaseFunctionTemplate)
+	case testNotValid:
+		name = ""
+		text = "{{{ . }}"
+	default:
+		return nil, eris.Errorf("not valid template type: %s", templateType)
 	}
 
-	return executeTemplate(writer, rawSwitchCaseTemplate, packageName, objects)
-}
-
-func executeFunctionSwitchCaseTemplate(writer io.Writer, packageName string, objects enums) error {
-	functionSwitchCaseTemplate, err := template.New("functionSwitchCaseTemplate").
-		Parse(fmt.Sprintf(switchCaseRangeOverEnumsTemplate, switchCaseFunctionTemplate))
+	t, err := template.New(name).Parse(text)
 	if err != nil {
-		return eris.Wrap(err, "parsing raw switch case template")
+		return nil, eris.Wrap(err, "parsing template")
 	}
 
-	return executeTemplate(writer, functionSwitchCaseTemplate, packageName, objects)
+	return t, nil
 }
 
-func executeTemplate(writer io.Writer, t *template.Template, packageName string, objects enums) error {
+func executeTemplate(writer io.Writer, templateType TemplateType, packageName string, objects enums) error {
 	type templateData struct {
 		Objects     enums
 		PackageName string
+	}
+
+	t, err := createTemplate(templateType)
+	if err != nil {
+		return eris.Wrap(err, "creating template")
 	}
 
 	return eris.Wrap(

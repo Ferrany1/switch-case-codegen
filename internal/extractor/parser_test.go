@@ -1,6 +1,7 @@
 package extractor //nolint: testpackage // testing unexported functions
 
 import (
+	"go/ast"
 	"reflect"
 	"testing"
 )
@@ -221,6 +222,45 @@ func Test_parseEnumsFromFile(t *testing.T) {
 				}
 				if !reflect.DeepEqual(got, testCase.want) {
 					t.Errorf("parseEnumsFromFile() got = %v, want %v", got, testCase.want)
+				}
+			},
+		)
+	}
+}
+
+func Test_extractEnumsFromDeclaration(t *testing.T) {
+	t.Parallel()
+
+	type args struct {
+		declaration        *ast.GenDecl
+		includeNonExported bool
+	}
+	var tests = []struct {
+		name string
+		args args
+		want enums
+	}{
+		{
+			name: "1",
+			args: args{
+				declaration:        &ast.GenDecl{Specs: []ast.Spec{&ast.TypeSpec{}}},
+				includeNonExported: false,
+			},
+			want: enums{},
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(
+			tt.name,
+			func(t *testing.T) {
+				t.Parallel()
+
+				if got := extractEnumsFromDeclaration(
+					tt.args.declaration,
+					tt.args.includeNonExported,
+				); !reflect.DeepEqual(got, tt.want) {
+					t.Errorf("extractEnumsFromDeclaration() = %v, want %v", got, tt.want)
 				}
 			},
 		)
