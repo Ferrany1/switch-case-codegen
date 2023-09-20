@@ -6,7 +6,7 @@ Tool for generating switch cases for enums.
 
 ## Install:
 ```
-go install github.com/Ferrany1/switch-case-codegen/cmdlatest
+go install github.com/Ferrany1/switch-case-codegen/cmd/switch-case-codegen@latest
 ```
 
 ## Usage:
@@ -34,7 +34,7 @@ Global Flags:
 ## Example:
 enum.go:
 ```golang
-//go:generate switch-case-codegen  enum -p ./1.go -t function -n test_package --types TestType2
+//go:generate switch-case-codegen enum -p ./enum.go -t function -n test_package --types TestType2
 
 type TestType1 string
 
